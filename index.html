@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🕹️ Selettore Personaggi Arcade</title>
+  <title>🕹️ Serena Majestic</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -309,10 +309,15 @@
       <div class="image-box" id="imageBox"></div>
       <div class="name" id="name">Nome</div>
       <div class="description" id="description">Descrizione</div>
-      <div class="buttons">
-        <button onclick="prevCharacter()">&larr;</button>
-        <button onclick="nextCharacter()">&rarr;</button>
-      </div>
+    <div class="buttons">
+  <button onclick="prevCharacter()">&larr;</button>
+  <button onclick="nextCharacter()">&rarr;</button>
+</div>
+<div style="margin-top: 20px;">
+  <button id="selectButton" style="width:auto; border-radius: 8px; padding: 12px 30px; font-size: 0.8em;">
+    🎮 Seleziona
+  </button>
+</div>
     </div>
   </div>
 
@@ -392,6 +397,28 @@
       generateThumbnails();
       updateCharacter();
     });
+
+    document.getElementById('selectButton').addEventListener('click', () => {
+  const selected = characters[current];
+  // Puoi sostituire l'alert con un redirect o logica di gioco
+  alert(`Hai selezionato: ${selected.name}. Che il gioco abbia inizio!`);
+
+  // Esempio: Nascondi il selettore e mostra una nuova schermata
+  wrapper.style.display = 'none';
+
+  // Mostra un placeholder per il gioco
+  const gameScreen = document.createElement('div');
+  gameScreen.innerHTML = `<h2 style="text-align:center;">👾 Inizio del gioco con <span style="color:#66ccff">${selected.name}</span>!</h2>`;
+  gameScreen.style.cssText = `
+    color: #66ccff;
+    font-family: 'Press Start 2P', cursive;
+    padding: 40px;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+  `;
+  document.body.appendChild(gameScreen);
+});
+    
   </script>
 
 </body>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🕹️ Selettore Personaggi Arcade</title>
+  <title>🕹️ Serena majestico</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -402,13 +402,23 @@
       });
     }
 
-    startButton.addEventListener('click', () => {
-      startMenu.style.display = 'none';
-      wrapper.style.display = 'flex';
-      generateThumbnails();
-      updateCharacter();
-    });
+   startButton.addEventListener('click', () => {
+  startMenu.style.display = 'none';
+  wrapper.style.display = 'flex';
+  generateThumbnails();
+  updateCharacter();
+
+  // ▶️ Avvia la musica
+  const bgMusic = document.getElementById('bgMusic');
+  bgMusic.play().catch(err => {
+    console.log('Errore nell’avvio della musica:', err);
+  });
+});
   </script>
 
+<audio id="bgMusic" loop>
+  <source src="sound.wav" type="audio/wav">
+  Il tuo browser non supporta l'elemento audio.
+</audio>
 </body>
 </html>

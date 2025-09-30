@@ -434,22 +434,58 @@
       });
     }
 
-  selectButton.addEventListener('click', () => {
+ selectButton.addEventListener('click', () => {
   const selectedCharacter = characters[current];
 
-  // Nasconde il selettore personaggi
+  // Nascondi il selettore personaggi
   wrapper.style.display = 'none';
 
   // Mostra il contenitore del gioco
   const gameContainer = document.getElementById('gameContainer');
   gameContainer.style.display = 'block';
 
-  // Imposta l'immagine del personaggio scelto
+  // Imposta l'immagine del personaggio nel gioco
   const gameCharacter = document.getElementById('gameCharacter');
   gameCharacter.style.backgroundImage = `url(${selectedCharacter.image})`;
-  gameCharacter.style.bottom = '0px';
+  gameCharacter.style.bottom = '0px'; // posizione iniziale
+  gameCharacter.style.transition = 'bottom 0.1s ease-in-out';
 
-  // Controlli: tastiera (barra spazio)
+  // Variabili di gioco
+  const gameObstacle = document.getElementById('gameObstacle');
+  const scoreEl = document.getElementById('score');
+  let score = 0;
+  let isJumping = false;
+  let gameOver = false;
+
+  // Funzione salto
+  function jump() {
+    if (isJumping) return;
+    isJumping = true;
+    let position = 0;
+    const jumpHeight = 100;
+    const jumpSpeed = 20;
+
+    const upInterval = setInterval(() => {
+      if (position >= jumpHeight) {
+        clearInterval(upInterval);
+
+        const downInterval = setInterval(() => {
+          if (position <= 0) {
+            clearInterval(downInterval);
+            isJumping = false;
+          } else {
+            position -= jumpSpeed;
+            gameCharacter.style.bottom = position + 'px';
+          }
+        }, 20);
+      } else {
+        position += jumpSpeed;
+        gameCharacter.style.bottom = position + 'px';
+      }
+    }, 20);
+  }
+
+  // Controllo tasto spazio per saltare
   document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && !gameOver) {
       e.preventDefault();
@@ -457,45 +493,44 @@
     }
   });
 
-  // Controlli: touch (mobile)
+  // Salto con tap/touch su gameContainer
   gameContainer.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (!gameOver) jump();
   });
 
-  // Movimento ostacolo da destra a sinistra
+  // Muovi l'ostacolo e controllo collisioni
   let obstaclePosition = gameContainer.offsetWidth;
-  const obstacleSpeed = 6;
+  const obstacleSpeed = 4; // velocità movimento ostacolo in px
 
   function gameLoop() {
     if (gameOver) return;
 
     obstaclePosition -= obstacleSpeed;
-
-    // Reset ostacolo e aumento punteggio
-    if (obstaclePosition < -30) {
+    if (obstaclePosition < -30) { // reset ostacolo dopo uscita dal bordo sx
       obstaclePosition = gameContainer.offsetWidth;
       score++;
       scoreEl.textContent = `Punteggio: ${score}`;
     }
 
-    gameObstacle.style.left = obstaclePosition + 'px';
+    gameObstacle.style.right = obstaclePosition + 'px';
 
-    // Collisione semplice (bounding box)
+    // Controlla collisione (semplice bounding box)
     const characterBottom = parseInt(gameCharacter.style.bottom) || 0;
     if (
-      obstaclePosition < 100 && obstaclePosition > 50 &&
-      characterBottom < 50
+      obstaclePosition < 100 && obstaclePosition > 50 && // posizione ostacolo vicino al personaggio
+      characterBottom < 50 // se personaggio non è sufficientemente alto, collisione
     ) {
       gameOver = true;
-      alert(`💥 Game Over! Punteggio finale: ${score}`);
+      alert(`Game Over! Punteggio finale: ${score}`);
+      // Ricarica pagina o reset gioco
       window.location.reload();
     }
 
     requestAnimationFrame(gameLoop);
   }
 
-  // Avvia il gioco
+  // Avvia ciclo di gioco
   gameLoop();
 });
 

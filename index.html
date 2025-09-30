@@ -402,18 +402,28 @@
       });
     }
 
-   startButton.addEventListener('click', () => {
+ const bgMusic = document.getElementById('bgMusic');
+
+startButton.addEventListener('click', () => {
   startMenu.style.display = 'none';
   wrapper.style.display = 'flex';
   generateThumbnails();
   updateCharacter();
 
-  // ▶️ Avvia la musica
-  const bgMusic = document.getElementById('bgMusic');
-  bgMusic.volune = 0.3;
+  bgMusic.volume = 0.3;  // opzionale, per regolare il volume
   bgMusic.play().catch(err => {
     console.log('Errore nell’avvio della musica:', err);
   });
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    bgMusic.pause();
+  } else {
+    bgMusic.play().catch(() => {
+      // Silenzia errori se l’utente non ha ancora interagito
+    });
+  }
 });
   </script>
 

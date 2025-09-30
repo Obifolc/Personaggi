@@ -402,36 +402,29 @@
       });
     }
 
- const bgMusic = document.getElementById('bgMusic');
-  let musicStarted = false;
+ startButton.addEventListener('click', () => {
+  startMenu.style.display = 'none';
+  wrapper.style.display = 'flex';
+  generateThumbnails();
+  updateCharacter();
 
-  startButton.addEventListener('click', () => {
-    startMenu.style.display = 'none';
-    wrapper.style.display = 'flex';
-    generateThumbnails();
-    updateCharacter();
+  const bgMusic = document.getElementById('bgMusic');
+  bgMusic.volume = 0.3;
+  bgMusic.play().catch(err => {
+    console.log('Errore nell’avvio della musica:', err);
+  });
+});
 
-    // ▶️ Avvia musica
-    bgMusic.volume = 0.4;
-    bgMusic.play().then(() => {
-      musicStarted = true;
-    }).catch(err => {
-      console.log('Errore nell’avvio della musica:', err);
+document.addEventListener("visibilitychange", () => {
+  const bgMusic = document.getElementById("bgMusic");
+
+  if (document.hidden) {
+    bgMusic.pause();
+  } else {
+    bgMusic.play().catch(err => {
+      console.log('Impossibile riprendere la musica:', err);
     });
-  });
-
-  // ⏸️ Pausa se pagina in background
-  document.addEventListener('visibilitychange', () => {
-    if (!musicStarted) return;
-
-    if (document.hidden) {
-      bgMusic.pause();
-    } else {
-      bgMusic.play().catch(err => {
-        console.log('Errore nel riprendere la musica:', err);
-      });
-    }
-  });
+  }
 });
   </script>
 

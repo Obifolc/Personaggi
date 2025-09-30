@@ -410,6 +410,7 @@
 
   // ▶️ Avvia la musica
   const bgMusic = document.getElementById('bgMusic');
+  bgMusic.volune = 0.3;
   bgMusic.play().catch(err => {
     console.log('Errore nell’avvio della musica:', err);
   });

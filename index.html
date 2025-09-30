@@ -357,9 +357,9 @@
     </div>
   </div>
 
-  <div id="gameContainer" style="display:none; position: relative; width: 600px; height: 200px; border: 2px solid #66ccff; overflow: hidden; background: rgba(0, 20, 40, 0.6); margin: 20px auto; border-radius: 12px; box-shadow: 0 0 20px #3399ff;">
+  <div id="gameContainer" style="display:none; position: relative; width: 600px; height: 400px; border: 2px solid #66ccff; overflow: hidden; background: rgba(0, 20, 40, 0.6); margin: 20px auto; border-radius: 12px; box-shadow: 0 0 20px #3399ff;">
 <div id="gameCharacter" style="position: absolute; bottom: 0; left: 50px; width: 50px; height: 50px; background-size: contain; background-repeat: no-repeat; background-position: center; filter: drop-shadow(0 0 6px #66ccff);"></div>
-<div id="gameObstacle" style="position: absolute; bottom: 0; left: -50px; width: 30px; height: 50px; background: linear-gradient(145deg, #ff0033, #cc0000); border: 2px solid #ff6688; border-radius: 10px; box-shadow: 0 0 10px #ff3366;"></div>
+<div id="gameObstacle" style="position: absolute; bottom: 0; left: -50px; width: 25px; height: 25px; background: linear-gradient(145deg, #ff0033, #cc0000); border: 10px solid #ff6688; border-radius: 10px; box-shadow: 0 0 10px #ff3366;"></div>
  <div id="score" style="position: absolute; top: 10px; right: 20px; font-size: 12px; font-family: 'Press Start 2P', cursive; color: #66ccff; text-shadow: 0 0 5px #3399ff;">Punteggio: 0</div>
 
 </div>
@@ -489,8 +489,8 @@ selectButton.addEventListener('click', () => {
     if (isJumping) return;
     isJumping = true;
     let position = 0;
-    const jumpHeight = 100;
-    const jumpSpeed = 20;
+    const jumpHeight = 200;
+    const jumpSpeed = 10;
 
     const upInterval = setInterval(() => {
       if (position >= jumpHeight) {

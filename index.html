@@ -359,7 +359,7 @@
 
   <div id="gameContainer" style="display:none; position: relative; width: 600px; height: 200px; border: 2px solid #66ccff; overflow: hidden; background: rgba(0, 20, 40, 0.6); margin: 20px auto; border-radius: 12px; box-shadow: 0 0 20px #3399ff;">
 <div id="gameCharacter" style="position: absolute; bottom: 0; left: 50px; width: 50px; height: 50px; background-size: contain; background-repeat: no-repeat; background-position: center; filter: drop-shadow(0 0 6px #66ccff);"></div>
-<div id="gameObstacle" style="position: absolute; bottom: 0; right: -50px; width: 30px; height: 50px; background: linear-gradient(145deg, #ff0033, #cc0000); border: 2px solid #ff6688; border-radius: 10px; box-shadow: 0 0 10px #ff3366;"></div>
+<div id="gameObstacle" style="position: absolute; bottom: 0; left: 600px; width: 30px; height: 50px; background: linear-gradient(145deg, #ff0033, #cc0000); border: 2px solid #ff6688; border-radius: 6px; box-shadow: 0 0 10px #ff3366;"></div>
  <div id="score" style="position: absolute; top: 10px; right: 20px; font-size: 12px; font-family: 'Press Start 2P', cursive; color: #66ccff; text-shadow: 0 0 5px #3399ff;">Punteggio: 0</div>
 
 </div>
@@ -434,84 +434,22 @@
       });
     }
 
-  startButton.addEventListener('click', () => {
-  startMenu.style.display = 'none';
-  wrapper.style.display = 'flex';
-  generateThumbnails();
-  updateCharacter();
-
-  const bgMusic = document.getElementById('bgMusic');
-  bgMusic.volume = 0.3;
-  bgMusic.play().catch(err => {
-    console.log('Errore nell’avvio della musica:', err);
-  });
-});
-
-document.addEventListener("visibilitychange", () => {
-  const bgMusic = document.getElementById("bgMusic");
-
-  if (document.hidden) {
-    bgMusic.pause();
-  } else {
-    bgMusic.play().catch(err => {
-      console.log('Impossibile riprendere la musica:', err);
-    });
-  }
-});
-
-const selectButton = document.getElementById('selectButton');
-
-selectButton.addEventListener('click', () => {
+  selectButton.addEventListener('click', () => {
   const selectedCharacter = characters[current];
 
-  // Nascondi il selettore personaggi
+  // Nasconde il selettore personaggi
   wrapper.style.display = 'none';
 
   // Mostra il contenitore del gioco
   const gameContainer = document.getElementById('gameContainer');
   gameContainer.style.display = 'block';
 
-  // Imposta l'immagine del personaggio nel gioco
+  // Imposta l'immagine del personaggio scelto
   const gameCharacter = document.getElementById('gameCharacter');
   gameCharacter.style.backgroundImage = `url(${selectedCharacter.image})`;
-  gameCharacter.style.bottom = '0px'; // posizione iniziale
+  gameCharacter.style.bottom = '0px';
 
-  // Variabili di gioco
-  const gameObstacle = document.getElementById('gameObstacle');
-  const scoreEl = document.getElementById('score');
-  let score = 0;
-  let isJumping = false;
-  let gameOver = false;
-
-  // Funzione salto
-  function jump() {
-    if (isJumping) return;
-    isJumping = true;
-    let position = 0;
-    const jumpHeight = 100;
-    const jumpSpeed = 20;
-
-    const upInterval = setInterval(() => {
-      if (position >= jumpHeight) {
-        clearInterval(upInterval);
-
-        const downInterval = setInterval(() => {
-          if (position <= 0) {
-            clearInterval(downInterval);
-            isJumping = false;
-          } else {
-            position -= jumpSpeed;
-            gameCharacter.style.bottom = position + 'px';
-          }
-        }, 20);
-      } else {
-        position += jumpSpeed;
-        gameCharacter.style.bottom = position + 'px';
-      }
-    }, 20);
-  }
-
-  // Controllo tasto spazio per saltare
+  // Controlli: tastiera (barra spazio)
   document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && !gameOver) {
       e.preventDefault();
@@ -519,44 +457,45 @@ selectButton.addEventListener('click', () => {
     }
   });
 
-  // Salto con tap/touch su gameContainer
+  // Controlli: touch (mobile)
   gameContainer.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (!gameOver) jump();
   });
 
-  // Muovi l'ostacolo e controllo collisioni
+  // Movimento ostacolo da destra a sinistra
   let obstaclePosition = gameContainer.offsetWidth;
-  const obstacleSpeed = 6; // velocità movimento ostacolo in px
+  const obstacleSpeed = 6;
 
   function gameLoop() {
     if (gameOver) return;
 
     obstaclePosition -= obstacleSpeed;
-    if (obstaclePosition < -30) { // reset ostacolo dopo uscita dal bordo sx
+
+    // Reset ostacolo e aumento punteggio
+    if (obstaclePosition < -30) {
       obstaclePosition = gameContainer.offsetWidth;
       score++;
       scoreEl.textContent = `Punteggio: ${score}`;
     }
 
-    gameObstacle.style.right = obstaclePosition + 'px';
+    gameObstacle.style.left = obstaclePosition + 'px';
 
-    // Controlla collisione (semplice bounding box)
+    // Collisione semplice (bounding box)
     const characterBottom = parseInt(gameCharacter.style.bottom) || 0;
     if (
-      obstaclePosition < 100 && obstaclePosition > 50 && // posizione ostacolo vicino al personaggio
-      characterBottom < 50 // se personaggio non è sufficientemente alto, collisione
+      obstaclePosition < 100 && obstaclePosition > 50 &&
+      characterBottom < 50
     ) {
       gameOver = true;
-      alert(`Game Over! Punteggio finale: ${score}`);
-      // Ricarica pagina o reset gioco
+      alert(`💥 Game Over! Punteggio finale: ${score}`);
       window.location.reload();
     }
 
     requestAnimationFrame(gameLoop);
   }
 
-  // Avvia ciclo di gioco
+  // Avvia il gioco
   gameLoop();
 });
 

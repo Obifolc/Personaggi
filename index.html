@@ -403,27 +403,35 @@
     }
 
  const bgMusic = document.getElementById('bgMusic');
+  let musicStarted = false;
 
-startButton.addEventListener('click', () => {
-  startMenu.style.display = 'none';
-  wrapper.style.display = 'flex';
-  generateThumbnails();
-  updateCharacter();
+  startButton.addEventListener('click', () => {
+    startMenu.style.display = 'none';
+    wrapper.style.display = 'flex';
+    generateThumbnails();
+    updateCharacter();
 
-  bgMusic.volume = 0.3;  // opzionale, per regolare il volume
-  bgMusic.play().catch(err => {
-    console.log('Errore nell’avvio della musica:', err);
-  });
-});
-
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    bgMusic.pause();
-  } else {
-    bgMusic.play().catch(() => {
-      // Silenzia errori se l’utente non ha ancora interagito
+    // ▶️ Avvia musica
+    bgMusic.volume = 0.4;
+    bgMusic.play().then(() => {
+      musicStarted = true;
+    }).catch(err => {
+      console.log('Errore nell’avvio della musica:', err);
     });
-  }
+  });
+
+  // ⏸️ Pausa se pagina in background
+  document.addEventListener('visibilitychange', () => {
+    if (!musicStarted) return;
+
+    if (document.hidden) {
+      bgMusic.pause();
+    } else {
+      bgMusic.play().catch(err => {
+        console.log('Errore nel riprendere la musica:', err);
+      });
+    }
+  });
 });
   </script>
 
